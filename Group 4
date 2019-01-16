@@ -1,0 +1,220 @@
+//Avengers
+
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+#include <avr/power.h>
+#include<Servo.h>
+#include <TM1637Display.h>
+Servo motor[8];
+#endif
+
+#define PIN            9
+
+#define NUMPIXELS      8
+
+#define COLOURNUMBER 3
+
+#define PIXELNUMBER 8
+
+#define CLK 45
+#define DIO 44
+
+TM1637Display display(CLK, DIO);
+
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+int flag[] = {0,0,0,0,0,0,0,0};
+const byte ledPin0 = 30;
+const byte ledPin1 = 31;
+const byte ledPin2 = 32;
+const byte interruptPin0 = 2;
+const byte interruptPin1 = 3;
+const byte interruptPin2 = 18;
+long colournumber; // Generates a random number
+volatile byte state = LOW;
+long pixelColors[] = {pixels.Color(0, 150, 0),pixels.Color(150, 150, 0),pixels.Color(255, 0, 144), };
+unsigned long prevTime = 0,prevTime1 = 0;
+unsigned long currentTime = 0,currentTime1 = 0;
+unsigned int Speed =10000;
+int j,k,l,p=0,r,s,t;
+int score=0;
+long interval, turn;
+void setup() {
+  for(l=8;l<14;l++)
+  {motor[p].attach(l);p++;}
+  motor[6].attach(4);
+  motor[7].attach(7);
+  randomSeed(analogRead(0));
+#if defined (__AVR_ATtiny85__)
+  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
+
+  pixels.begin(); // This initializes the NeoPixel library.
+  pinMode(ledPin0, OUTPUT);
+  pinMode(interruptPin0, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin0), blink2, CHANGE);
+  pinMode(ledPin1, OUTPUT);
+  pinMode(interruptPin1, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin1), blink, CHANGE);
+  pinMode(ledPin2, OUTPUT);
+  pinMode(interruptPin2, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin2), blink3, CHANGE);
+
+}
+
+void loop() {
+  display.setBrightness(0x0f);
+  
+
+  long pixelnumber; // Random pixel
+  
+  currentTime = millis();
+currentTime1 = millis();
+  if (currentTime - prevTime >= 2000) {
+    prevTime = currentTime;
+    for(int i=0; i< PIXELNUMBER; i++){
+      pixels.setPixelColor(i, pixels.Color(0, 0, 0));
+    }
+    if (currentTime1 - prevTime1 >= 4000) {
+      for(int w=0 ; w<4; w++)
+      {r=random(0,8);
+      if(flag[r]==0){
+      motor[r].write(180);
+      flag[r]=1;
+      }
+      else {motor[r].write(0);
+      flag[r]=0;}
+    }
+    
+    }
+  k=random(0, COLOURNUMBER);
+  j=random(0, PIXELNUMBER);
+  s=random(0, COLOURNUMBER);
+  t=random(0, PIXELNUMBER);
+  
+    while(s==k){
+    s=random(0,COLOURNUMBER);
+    }
+    while(t==j){
+    t=random(0, PIXELNUMBER);
+    }
+    pixels.setPixelColor(j, pixelColors[k]);
+    pixels.show();
+    pixels.setPixelColor(t, pixelColors[s]);   
+    pixels.show();
+  }
+
+}
+
+
+void blink() {
+  if (k == 0) {
+    digitalWrite(ledPin0, HIGH);
+    if(flag[j] == 0){
+      score--;
+    }
+    else{
+      score++;
+    }
+    
+    pixels.setPixelColor(j,pixels.Color(0, 0, 0));
+    pixels.show();
+    delay(300);
+    digitalWrite(ledPin0, LOW);
+    
+    
+  }
+    if (s == 0) {
+    digitalWrite(ledPin0, HIGH);
+    if(flag[j] == 0){
+      score--;
+    }
+    else{
+      score++;
+    }
+    
+    pixels.setPixelColor(t,pixels.Color(0, 0, 0));
+    pixels.show();
+    delay(300);
+    digitalWrite(ledPin0, LOW);
+    
+    
+  }
+  else {
+    digitalWrite(ledPin0, LOW);
+  }
+  display.showNumberDec(score, false);
+}
+
+void blink2() {
+  if (k == 1) {
+    digitalWrite(ledPin1, HIGH);
+    if(flag[j] == 0){
+      score--;
+    }
+    else{
+      score++;
+    }
+    pixels.setPixelColor(j,pixels.Color(0, 0, 0));
+    pixels.show();
+    delay(300);
+    digitalWrite(ledPin1, LOW);
+    
+    
+  }
+    else if (s == 1) {
+    digitalWrite(ledPin1, HIGH);
+    if(flag[j] == 0){
+      score--;
+    }
+    else{
+      score++;
+    }
+    pixels.setPixelColor(t,pixels.Color(0, 0, 0));
+    pixels.show();
+    delay(300);
+    digitalWrite(ledPin1, LOW);
+    
+    
+  }
+  else {
+    digitalWrite(ledPin1, LOW);
+  }
+  display.showNumberDec(score, false);
+}
+
+void blink3() {
+  if (k == 2) {
+    digitalWrite(ledPin2, HIGH);
+    if(flag[j] == 0){
+      score--;
+    }
+    else{
+      score++;
+    }
+    pixels.setPixelColor(j,pixels.Color(0, 0, 0));
+    pixels.show();
+    delay(300);
+    digitalWrite(ledPin2, LOW);
+    
+    
+  }
+    if (s == 2) {
+    digitalWrite(ledPin2, HIGH);
+    if(flag[j] == 0){
+      score--;
+    }
+    else{
+      score++;
+    }
+    pixels.setPixelColor(t,pixels.Color(0, 0, 0));
+    pixels.show();
+    delay(300);
+    digitalWrite(ledPin2, LOW);
+    
+    
+  }
+  else {
+    digitalWrite(ledPin2, LOW);
+  }
+  display.showNumberDec(score, false);
+}
