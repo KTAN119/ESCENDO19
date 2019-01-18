@@ -1,0 +1,49 @@
+// Include the Servo library
+#include <Servo.h>
+// Declare the Servo pin
+int servo1Pin = 9;
+int servo2Pin = 10;
+int isButton1Pressed, isButton2Pressed;
+int i = 0, j = 0;
+#define button1pin 2
+#define button2pin 4
+// Create a servo object
+Servo servo1;
+Servo servo2;
+void setup() {
+  // We need to attach the servo to the used pin number
+  servo1.attach(servo1Pin);
+  servo2.attach(servo2Pin);
+  pinMode(button1pin, INPUT_PULLUP);
+  pinMode(button2pin, INPUT_PULLUP);
+  servo1.write(0);
+  servo2.write(0);
+  Serial.begin(9600);
+
+}
+void loop() {
+  isButton1Pressed = digitalRead(button1pin);
+  isButton2Pressed = digitalRead(button2pin);
+  Serial.print("Button 1: ");
+  Serial.print(isButton1Pressed);
+  Serial.print("           Button 2: ");
+  Serial.println(isButton2Pressed);
+  if (i <= 125 && isButton1Pressed == LOW) {
+    i++;
+    servo1.write(i);
+  } else if (i < 30) {}
+  else {
+    i--;
+    servo1.write(i);
+  }
+  if (j <= 125 && isButton2Pressed == LOW) {
+    j++;
+    servo2.write(j);
+  } else if (j < 30) {}
+  else {
+    j--;
+    servo2.write(j);
+  }
+  //Serial.println(i);
+  delay(10);
+}
